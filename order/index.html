@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ご注文手続き | 余白と湯気</title>
+  <meta name="description" content="余白と湯気の銀行振込によるご注文ページです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#f0ede8;--bg-warm:#e8e4dd;--text:#2c2825;--light:#6b6560;--line:#c4beb6;--accent:#8a7e72;--white:#f7f5f2;--font-mincho:'Shippori Mincho','Zen Old Mincho',serif;--font-garamond:'EB Garamond',serif}
+    body{font-family:var(--font-mincho);background:var(--bg);color:var(--text);line-height:2.1;letter-spacing:.08em}
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+    a{color:inherit;text-decoration:none}
+    .page{max-width:1080px;margin:0 auto;padding:48px 24px 96px}
+    .topbar{display:flex;justify-content:space-between;gap:24px;margin-bottom:48px}
+    .topbar__brand{font-size:.9rem;letter-spacing:.22em}
+    .topbar__back{font-family:var(--font-garamond);font-size:.82rem;color:var(--accent)}
+    .hero{margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+    .hero__label{font-family:var(--font-garamond);font-size:.78rem;color:var(--accent);display:block;margin-bottom:16px}
+    .hero__title{font-size:1.8rem;font-weight:500;letter-spacing:.16em;margin-bottom:12px}
+    .hero__desc{max-width:700px;color:var(--light);font-size:.9rem}
+    .layout{display:grid;grid-template-columns:.95fr 1.05fr;gap:40px}
+    .panel{border:1px solid var(--line);background:rgba(247,245,242,.55);padding:28px}
+    .panel h2{font-size:.95rem;font-weight:500;letter-spacing:.12em;margin-bottom:16px}
+    .summary__name{font-size:1.2rem;font-weight:500;margin-bottom:10px}
+    .summary__meta{font-family:var(--font-garamond);color:var(--accent);font-size:.9rem;margin-bottom:18px}
+    .summary__desc{font-size:.86rem;color:var(--light);margin-bottom:18px}
+    .summary__note{font-size:.78rem;color:var(--light)}
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:.8rem;margin-bottom:6px;color:var(--light)}
+    .field input,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line);background:var(--white);font:inherit;color:var(--text)}
+    .field textarea{min-height:96px;resize:vertical}
+    .bank{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+    .bank dl{display:grid;grid-template-columns:130px 1fr;gap:8px 16px;font-size:.86rem}
+    .bank dt{color:var(--light)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    .btn{display:inline-block;padding:14px 24px;border:1px solid var(--line);background:transparent;cursor:pointer;font:inherit}
+    .btn--primary{background:var(--text);color:var(--white);border-color:var(--text)}
+    .mailbox{margin-top:18px;padding:16px;border:1px dashed var(--line);font-size:.8rem;color:var(--light);white-space:pre-wrap;background:rgba(247,245,242,.35)}
+    .warn{margin-top:18px;font-size:.78rem;color:var(--light)}
+    .status{margin-top:16px;padding:14px 16px;border:1px solid var(--line);font-size:.82rem;background:rgba(247,245,242,.45);display:none}
+    .status.is-visible{display:block}
+    .status.is-error{border-color:#9b7f7f;color:#6a4d4d;background:rgba(155,127,127,.08)}
+    @media (max-width:820px){.layout{grid-template-columns:1fr}.page{padding:32px 20px 72px}.hero__title{font-size:1.5rem}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="topbar__brand" href="../index.html">余白と湯気</a>
+      <a class="topbar__back" href="../products/index.html">Online Store</a>
+    </div>
+    <section class="hero">
+      <span class="hero__label">Bank Transfer Order</span>
+      <h1 class="hero__title">ご注文手続き</h1>
+      <p class="hero__desc">銀行振込によるご注文を受け付けます。送信後は注文情報を保存し、店舗宛とご注文者控えのメールを自動送信します。</p>
+    </section>
+    <section class="layout">
+      <div class="panel">
+        <h2>ご注文内容</h2>
+        <div class="summary__name" id="productName">商品を読み込み中です</div>
+        <div class="summary__meta" id="productMeta"></div>
+        <p class="summary__desc" id="productDesc"></p>
+        <p class="summary__note">注文確定後に入金確認を手動で行う想定です。配送先や振込名義が一致しない場合は確認連絡が必要です。</p>
+        <div class="bank">
+          <h2>振込先情報</h2>
+          <dl>
+            <dt>銀行名</dt><dd id="bankName">〇〇銀行</dd>
+            <dt>支店名</dt><dd id="bankBranch">△△支店</dd>
+            <dt>口座種別</dt><dd id="bankType">普通</dd>
+            <dt>口座番号</dt><dd id="bankNumber">1234567</dd>
+            <dt>口座名義</dt><dd id="bankHolder">ヨハクトユゲ</dd>
+          </dl>
+        </div>
+        <p class="warn" id="bankWarn">上の振込先は仮情報です。実運用前に必ず実際の口座情報へ差し替えてください。</p>
+      </div>
+      <div class="panel">
+        <h2>ご購入者情報</h2>
+        <div class="field"><label for="customerName">お名前</label><input id="customerName" name="customerName" autocomplete="name"></div>
+        <div class="field"><label for="customerEmail">メールアドレス</label><input id="customerEmail" name="customerEmail" type="email" autocomplete="email"></div>
+        <div class="field"><label for="customerZip">郵便番号</label><input id="customerZip" name="customerZip" autocomplete="postal-code"></div>
+        <div class="field"><label for="customerAddress">住所</label><textarea id="customerAddress" name="customerAddress"></textarea></div>
+        <div class="field"><label for="customerNote">備考</label><textarea id="customerNote" name="customerNote" placeholder="振込予定日や希望事項があれば記入"></textarea></div>
+        <div class="actions">
+          <button class="btn btn--primary" id="submitOrder" type="button">注文を送信する</button>
+          <button class="btn btn--primary" id="copyOrder" type="button">注文内容をコピー</button>
+        </div>
+        <div class="status" id="orderStatus"></div>
+        <div class="mailbox" id="orderPreview">ここに注文内容の下書きが表示されます。</div>
+      </div>
+    </section>
+  </main>
+  <script src="../store-data.js"></script>
+  <script src="./order-config.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const sku = params.get('sku') || 'mug';
+    const categories = Object.fromEntries((window.STORE_CATEGORIES || []).map((category) => [category.key, category.name]));
+    const products = window.STORE_PRODUCTS || [];
+    const product = products.find((item) => item.sku === sku) || products[0];
+    const orderConfig = window.ORDER_CONFIG || {};
+    const supportMail = orderConfig.ownerEmail || 'mypaac13@gmail.com';
+    const endpoint = orderConfig.endpoint || '';
+    let orderId = 'YY' + String(Date.now()).slice(-8);
+    let bankConfig = orderConfig.bank || {
+      bank_name: '三井住友銀行',
+      branch_name: 'オリーブCORK支店',
+      account_type: '普通',
+      account_number: '8110760',
+      account_holder: 'ﾐﾔﾊﾗｱﾔ'
+    };
+
+    const el = {
+      productName: document.getElementById('productName'),
+      productMeta: document.getElementById('productMeta'),
+      productDesc: document.getElementById('productDesc'),
+      customerName: document.getElementById('customerName'),
+      customerEmail: document.getElementById('customerEmail'),
+      customerZip: document.getElementById('customerZip'),
+      customerAddress: document.getElementById('customerAddress'),
+      customerNote: document.getElementById('customerNote'),
+      orderPreview: document.getElementById('orderPreview'),
+      orderStatus: document.getElementById('orderStatus'),
+      submitOrder: document.getElementById('submitOrder'),
+      copyOrder: document.getElementById('copyOrder'),
+      bankName: document.getElementById('bankName'),
+      bankBranch: document.getElementById('bankBranch'),
+      bankType: document.getElementById('bankType'),
+      bankNumber: document.getElementById('bankNumber'),
+      bankHolder: document.getElementById('bankHolder'),
+      bankWarn: document.getElementById('bankWarn')
+    };
+
+    el.productName.textContent = product.name;
+    el.productMeta.textContent = `${categories[product.category] || ''} / ${product.price} / 注文番号 ${orderId}`;
+    el.productDesc.textContent = product.short_description;
+
+    function setBankConfig(config) {
+      bankConfig = config || bankConfig;
+      el.bankName.textContent = bankConfig.bank_name || '未設定';
+      el.bankBranch.textContent = bankConfig.branch_name || '未設定';
+      el.bankType.textContent = bankConfig.account_type || '普通';
+      el.bankNumber.textContent = bankConfig.account_number || '未設定';
+      el.bankHolder.textContent = bankConfig.account_holder || '未設定';
+      const hasPlaceholder = [bankConfig.bank_name, bankConfig.branch_name, bankConfig.account_number, bankConfig.account_holder].some((value) => !value || value === '未設定');
+      el.bankWarn.textContent = hasPlaceholder
+        ? '振込先が未設定です。order/order-config.js を更新してください。'
+        : `ご注文送信後、この振込先に ${bankConfig.account_holder} 名義でお振込みください。`;
+    }
+
+    function setStatus(message, isError) {
+      el.orderStatus.textContent = message;
+      el.orderStatus.classList.add('is-visible');
+      el.orderStatus.classList.toggle('is-error', Boolean(isError));
+    }
+
+    function buildOrderText() {
+      return [
+        '余白と湯気 ご注文内容',
+        `注文番号: ${orderId}`,
+        `商品名: ${product.name}`,
+        `価格: ${product.price}`,
+        `カテゴリ: ${categories[product.category] || ''}`,
+        '',
+        `お名前: ${el.customerName.value || '未入力'}`,
+        `メールアドレス: ${el.customerEmail.value || '未入力'}`,
+        `郵便番号: ${el.customerZip.value || '未入力'}`,
+        `住所: ${el.customerAddress.value || '未入力'}`,
+        `備考: ${el.customerNote.value || 'なし'}`,
+        `送信先: ${supportMail}`,
+        '',
+        '振込先情報',
+        `銀行名: ${el.bankName.textContent}`,
+        `支店名: ${el.bankBranch.textContent}`,
+        `口座種別: ${el.bankType.textContent}`,
+        `口座番号: ${el.bankNumber.textContent}`,
+        `口座名義: ${el.bankHolder.textContent}`
+      ].join('\n');
+    }
+
+    function refreshPreview() {
+      el.orderPreview.textContent = buildOrderText();
+    }
+
+    [el.customerName, el.customerEmail, el.customerZip, el.customerAddress, el.customerNote].forEach((node) => {
+      node.addEventListener('input', refreshPreview);
+    });
+
+    function validateFields() {
+      if (!endpoint) return '注文送信先URLが未設定です。order/order-config.js に Apps Script の URL を入れてください。';
+      if (!el.customerName.value.trim()) return 'お名前を入力してください。';
+      if (!el.customerEmail.value.trim()) return 'メールアドレスを入力してください。';
+      if (!el.customerZip.value.trim()) return '郵便番号を入力してください。';
+      if (!el.customerAddress.value.trim()) return '住所を入力してください。';
+      return '';
+    }
+
+    el.submitOrder.addEventListener('click', async () => {
+      const error = validateFields();
+      if (error) {
+        setStatus(error, true);
+        return;
+      }
+
+      el.submitOrder.disabled = true;
+      el.submitOrder.textContent = '送信中...';
+      refreshPreview();
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sku: product.sku,
+            product_name: product.name,
+            product_price: product.price,
+            category_name: categories[product.category] || '',
+            customer_name: el.customerName.value.trim(),
+            customer_email: el.customerEmail.value.trim(),
+            customer_zip: el.customerZip.value.trim(),
+            customer_address: el.customerAddress.value.trim(),
+            customer_note: el.customerNote.value.trim(),
+            bank: bankConfig
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || '注文送信に失敗しました。');
+        }
+
+        orderId = data.order_id || orderId;
+        el.productMeta.textContent = `${categories[product.category] || ''} / ${product.price} / 注文番号 ${orderId}`;
+        if (data.bank) setBankConfig(data.bank);
+        refreshPreview();
+        const mailState = data.email_status === 'sent'
+          ? `控えメールを ${el.customerEmail.value.trim()} に送信しました。`
+          : '注文は保存されましたが、メール送信設定を確認してください。';
+        setStatus(`ご注文を受け付けました。注文番号: ${orderId}。${mailState} 上記の振込先をご確認ください。`, false);
+      } catch (err) {
+        setStatus(err.message || '注文送信に失敗しました。', true);
+      } finally {
+        el.submitOrder.disabled = false;
+        el.submitOrder.textContent = '注文を送信する';
+      }
+    });
+
+    el.copyOrder.addEventListener('click', async () => {
+      refreshPreview();
+      try {
+        await navigator.clipboard.writeText(buildOrderText());
+        el.copyOrder.textContent = 'コピーしました';
+        setTimeout(() => { el.copyOrder.textContent = '注文内容をコピー'; }, 1500);
+      } catch {
+        el.copyOrder.textContent = 'コピー失敗';
+        setTimeout(() => { el.copyOrder.textContent = '注文内容をコピー'; }, 1500);
+      }
+    });
+
+    setBankConfig(bankConfig);
+    refreshPreview();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>余白と湯気 — 静かな暮らしを整える生活雑貨店</title>
+  <meta name="description" content="余白と湯気は、静かな暮らしを整えるための生活雑貨店です。使うほど馴染む道具や、空気をつくる小さなものを、感覚で選んで届けます。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================
+       Base Reset & Variables
+    ============================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-bg: #f0ede8;
+      --color-bg-warm: #e8e4dd;
+      --color-bg-dark: #3a3632;
+      --color-text: #2c2825;
+      --color-text-light: #6b6560;
+      --color-text-on-dark: #d8d4ce;
+      --color-accent: #8a7e72;
+      --color-line: #c4beb6;
+      --color-white: #f7f5f2;
+      --font-mincho: 'Shippori Mincho', 'Zen Old Mincho', serif;
+      --font-garamond: 'EB Garamond', serif;
+      --content-width: 840px;
+      --content-narrow: 640px;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-mincho);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      line-height: 2.2;
+      letter-spacing: 0.08em;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+
+    /* ==============================
+       Opening Overlay
+    ============================== */
+    .opening {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-bg);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 1.2s ease, visibility 1.2s ease;
+    }
+
+    .opening.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .opening__text {
+      font-family: var(--font-mincho);
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      line-height: 2.8;
+      text-align: center;
+      color: var(--color-text);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+
+    .opening.is-visible .opening__text {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==============================
+       Header / Navigation
+    ============================== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 28px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-lockup--light {
+      color: var(--color-white);
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      display: block;
+    }
+
+    .brand-mark svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .brand-mark path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.9;
+    }
+
+    .header__logo {
+      font-family: var(--font-mincho);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      color: var(--color-white);
+    }
+
+    .header__nav {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .header__nav a {
+      font-family: var(--font-garamond);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      color: var(--color-white);
+      position: relative;
+      transition: opacity 0.3s;
+    }
+
+    .header__nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-white);
+      transition: width 0.4s ease;
+    }
+
+    .header__nav a:hover::after {
+      width: 100%;
+    }
+
+    .header__nav a:hover {
+      opacity: 0.7;
+    }
+
+    /* ==============================
+       Hero / First View
+    ============================== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero__bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        url('./pexels-earano-1443384 (1).jpg') center center / cover no-repeat,
+        #4a4540;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: var(--color-white);
+    }
+
+    .hero__title {
+      font-family: var(--font-mincho);
+      font-size: 2.4rem;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1.8s ease 0.3s forwards;
+    }
+
+    .hero__subtitle {
+      font-family: var(--font-mincho);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      line-height: 2.4;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 1.8s ease 0.8s forwards;
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 1.5s ease 1.5s forwards;
+    }
+
+    .hero__scroll span {
+      font-family: var(--font-garamond);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--color-white);
+      opacity: 0.6;
+    }
+
+    .hero__scroll-line {
+      width: 1px;
+      height: 48px;
+      background: var(--color-white);
+      opacity: 0.4;
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==============================
+       Sections - Common
+    ============================== */
+    .section {
+      padding: 120px 24px;
+    }
+
+    .section--large {
+      padding: 160px 24px;
+    }
+
+    .section__inner {
+      max-width: var(--content-width);
+      margin: 0 auto;
+    }
+
+    .section__inner--narrow {
+      max-width: var(--content-narrow);
+      margin: 0 auto;
+    }
+
+    /* Fade-in on scroll */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    .fade-in.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-in--slow {
+      transition-duration: 1.8s;
+    }
+
+    /* ==============================
+       Concept Section
+    ============================== */
+    .concept {
+      text-align: center;
+      background: var(--color-bg);
+    }
+
+    .concept__lead {
+      font-size: 1.05rem;
+      font-weight: 400;
+      line-height: 2.8;
+      letter-spacing: 0.12em;
+      color: var(--color-text);
+      margin-bottom: 48px;
+    }
+
+    .concept__body {
+      font-size: 0.92rem;
+      font-weight: 400;
+      line-height: 2.6;
+      letter-spacing: 0.08em;
+      color: var(--color-text-light);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .concept__line {
+      width: 1px;
+      height: 64px;
+      background: var(--color-line);
+      margin: 56px auto 0;
+    }
+
+    /* ==============================
+       Scene Section
+    ============================== */
+    .scenes {
+      background: var(--color-bg-warm);
+    }
+
+    .scenes__heading {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .scenes__heading-en {
+      font-family: var(--font-garamond);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .scenes__heading-ja {
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+    }
+
+    .scenes__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px 48px;
+    }
+
+    .scene-card {
+      display: block;
+      color: inherit;
+      cursor: pointer;
+      transition: transform 0.6s ease;
+    }
+
+    .scene-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .scene-card__image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--color-line);
+      margin-bottom: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .scene-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .scene-card__image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #c4beb6, #a89e94);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-garamond);
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--color-white);
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+    }
+
+    .scene-card__title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+
+    .scene-card__desc {
+      font-size: 0.82rem;
+      color: var(--color-text-light);
+      line-height: 2.2;
+      letter-spacing: 0.06em;
+    }
+
+    .scene-card__count {
+      font-family: var(--font-garamond);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      letter-spacing: 0.1em;
+      margin-top: 12px;
+    }
+
+    /* ==============================
+       Products Section
+    ============================== */
+    .products {
+      background: var(--color-bg);
+    }
+
+    .products__heading {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .products__heading-en {
+      font-family: var(--font-garamond);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .products__heading-ja {
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+    }
+
+    .products__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px 36px;
+    }
+
+    .product-card {
+      transition: transform 0.6s ease;
+      cursor: pointer;
+    }
+
+    .product-card__link {
+      display: block;
+      color: inherit;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-card__image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--color-line);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .product-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-card__image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-garamond);
+      font-size: 0.75rem;
+      font-style: italic;
+      color: var(--color-white);
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+    }
+
+    .product-card:nth-child(1) .product-card__image-placeholder { background: linear-gradient(135deg, #b8afa5, #9a918a); }
+    .product-card:nth-child(2) .product-card__image-placeholder { background: linear-gradient(135deg, #a89e94, #8a8078); }
+    .product-card:nth-child(3) .product-card__image-placeholder { background: linear-gradient(135deg, #c4baa0, #a89a88); }
+    .product-card:nth-child(4) .product-card__image-placeholder { background: linear-gradient(135deg, #8a8078, #6b6560); }
+    .product-card:nth-child(5) .product-card__image-placeholder { background: linear-gradient(135deg, #b0a898, #928a7e); }
+    .product-card:nth-child(6) .product-card__image-placeholder { background: linear-gradient(135deg, #9a9488, #7a746a); }
+
+    .product-card__name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .product-card__desc {
+      font-size: 0.78rem;
+      color: var(--color-text-light);
+      line-height: 2;
+    }
+
+    .product-card__price {
+      font-family: var(--font-garamond);
+      font-size: 0.82rem;
+      color: var(--color-accent);
+      margin-top: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .products__more {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    /* ==============================
+       Narrative / Column Section
+    ============================== */
+    .narrative {
+      background: var(--color-bg-dark);
+      color: var(--color-text-on-dark);
+      position: relative;
+    }
+
+    .narrative__inner {
+      max-width: var(--content-narrow);
+      margin: 0 auto;
+    }
+
+    .narrative__label {
+      font-family: var(--font-garamond);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      display: block;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .narrative__title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-align: center;
+      line-height: 2.4;
+      margin-bottom: 48px;
+    }
+
+    .narrative__body {
+      font-size: 0.88rem;
+      font-weight: 400;
+      line-height: 2.8;
+      letter-spacing: 0.06em;
+      color: var(--color-text-on-dark);
+      opacity: 0.85;
+    }
+
+    .narrative__body p + p {
+      margin-top: 2em;
+    }
+
+    .narrative__image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-top: 64px;
+      overflow: hidden;
+    }
+
+    .narrative__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .narrative__image-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #5a544e, #4a4540);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-garamond);
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--color-text-on-dark);
+      opacity: 0.4;
+    }
+
+    /* ==============================
+       About Section
+    ============================== */
+    .about {
+      background: var(--color-bg);
+    }
+
+    .about__inner {
+      max-width: var(--content-narrow);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .about__label {
+      font-family: var(--font-garamond);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 48px;
+    }
+
+    .about__text {
+      font-size: 0.95rem;
+      font-weight: 400;
+      line-height: 2.8;
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+    }
+
+    .about__text p + p {
+      margin-top: 2em;
+    }
+
+    .about__line {
+      width: 1px;
+      height: 48px;
+      background: var(--color-line);
+      margin: 64px auto 0;
+    }
+
+    /* ==============================
+       New Arrivals
+    ============================== */
+    .arrivals {
+      background: var(--color-bg-warm);
+    }
+
+    .arrivals__heading {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .arrivals__heading-en {
+      font-family: var(--font-garamond);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .arrivals__heading-ja {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+    }
+
+    .arrivals__list {
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scrollbar-width: none;
+    }
+
+    .arrivals__list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .arrival-card {
+      flex: 0 0 260px;
+      cursor: pointer;
+      transition: transform 0.6s ease;
+    }
+
+    .arrival-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .arrival-card__image {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .arrival-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .arrival-card__image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-garamond);
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--color-white);
+      opacity: 0.5;
+    }
+
+    .arrival-card:nth-child(1) .arrival-card__image-placeholder { background: linear-gradient(180deg, #b8afa5, #a09890); }
+    .arrival-card:nth-child(2) .arrival-card__image-placeholder { background: linear-gradient(180deg, #a89e94, #908880); }
+    .arrival-card:nth-child(3) .arrival-card__image-placeholder { background: linear-gradient(180deg, #c0b8a8, #a8a090); }
+    .arrival-card:nth-child(4) .arrival-card__image-placeholder { background: linear-gradient(180deg, #989088, #807870); }
+
+    .arrival-card__tag {
+      font-family: var(--font-garamond);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+
+    .arrival-card__name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+    }
+
+    /* ==============================
+       CTA / Button
+    ============================== */
+    .btn {
+      display: inline-block;
+      font-family: var(--font-mincho);
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      padding: 14px 48px;
+      border: 1px solid var(--color-line);
+      color: var(--color-text);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    .btn:hover {
+      background: var(--color-text);
+      color: var(--color-white);
+    }
+
+    .btn--light {
+      border-color: rgba(200, 190, 178, 0.3);
+      color: var(--color-text-on-dark);
+    }
+
+    .btn--light:hover {
+      background: var(--color-text-on-dark);
+      color: var(--color-bg-dark);
+    }
+
+    /* ==============================
+       Footer
+    ============================== */
+    .footer {
+      background: var(--color-bg-dark);
+      color: var(--color-text-on-dark);
+      padding: 80px 24px 48px;
+    }
+
+    .footer__inner {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer__logo {
+      font-family: var(--font-mincho);
+      font-size: 1.1rem;
+      letter-spacing: 0.3em;
+      margin-bottom: 24px;
+      justify-content: center;
+      color: var(--color-text-on-dark);
+    }
+
+    .footer__desc {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: 48px;
+      line-height: 2;
+    }
+
+    .footer__nav {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      list-style: none;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .footer__nav a {
+      font-family: var(--font-garamond);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      color: var(--color-text-on-dark);
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .footer__nav a:hover {
+      opacity: 1;
+    }
+
+    .footer__line {
+      width: 40px;
+      height: 1px;
+      background: var(--color-accent);
+      margin: 0 auto 32px;
+      opacity: 0.4;
+    }
+
+    .footer__copy {
+      font-family: var(--font-garamond);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      opacity: 0.4;
+    }
+
+    /* ==============================
+       Responsive
+    ============================== */
+    @media (max-width: 768px) {
+      .header {
+        padding: 20px 24px;
+      }
+
+      .brand-lockup {
+        gap: 6px;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+      }
+
+      .header__nav {
+        display: none;
+      }
+
+      .hero__title {
+        font-size: 1.6rem;
+        letter-spacing: 0.25em;
+      }
+
+      .hero__subtitle {
+        font-size: 0.78rem;
+        padding: 0 24px;
+      }
+
+      .section {
+        padding: 80px 20px;
+      }
+
+      .section--large {
+        padding: 100px 20px;
+      }
+
+      .scenes__grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .products__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px 20px;
+      }
+
+      .concept__lead {
+        font-size: 0.95rem;
+      }
+
+      .footer__nav {
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products__grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Opening -->
+  <div class="opening" id="opening">
+    <div class="opening__text">
+      窓を開けて、光を入れて、<br>
+      好きなものだけ並んだ部屋で過ごす。<br><br>
+      そんな静かな時間を気持ちよくするための、<br>
+      生活道具を集めています。
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__logo brand-lockup brand-lockup--light">
+      <span class="brand-mark" aria-hidden="true">
+        <img src="./yohakutoyugelogo-transparent.png" alt="">
+      </span>
+      <span>余白と湯気</span>
+    </div>
+    <ul class="header__nav">
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#scenes">Scenes</a></li>
+      <li><a href="#products">Online Store</a></li>
+      <li><a href="#column">Column</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <h1 class="hero__title">余白と湯気</h1>
+      <p class="hero__subtitle">
+        静かな暮らしを整える、生活雑貨店。
+      </p>
+    </div>
+    <div class="hero__scroll">
+      <span>scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Concept -->
+  <section class="section section--large concept" id="concept">
+    <div class="section__inner--narrow">
+      <div class="fade-in">
+        <p class="concept__lead">
+          窓を開けて、光を入れて、<br>
+          好きなものだけ並んだ部屋で過ごす。
+        </p>
+      </div>
+      <div class="fade-in fade-in--slow">
+        <p class="concept__body">
+          余白と湯気は、<br>
+          静かな暮らしを整えるための生活雑貨店です。<br><br>
+          使うほど馴染む道具や、<br>
+          空気をつくる小さなものを、<br>
+          感覚で選んで届けます。
+        </p>
+      </div>
+      <div class="concept__line fade-in"></div>
+    </div>
+  </section>
+
+  <!-- Scenes -->
+  <section class="section section--large scenes" id="scenes">
+    <div class="section__inner">
+      <div class="scenes__heading fade-in">
+        <span class="scenes__heading-en">Scenes</span>
+        <h2 class="scenes__heading-ja">暮らしの場面から選ぶ</h2>
+      </div>
+      <div class="scenes__grid">
+        <a class="scene-card fade-in" href="./scenes/detail.html?key=morning">
+          <div class="scene-card__image">
+            <img src="./pexels-little-forest-2150377525-31959144.jpg" alt="朝の時間">
+          </div>
+          <h3 class="scene-card__title">朝の時間</h3>
+          <p class="scene-card__desc">
+            光が入る窓辺と、静かなトレーの上。<br>
+            朝の時間を少しだけ丁寧にする道具たち。
+          </p>
+          <span class="scene-card__count">7 items</span>
+        </a>
+        <a class="scene-card fade-in" href="./scenes/detail.html?key=desk">
+          <div class="scene-card__image">
+            <img src="./tukue.jpg" alt="机の上を整える">
+          </div>
+          <h3 class="scene-card__title">机の上を整える</h3>
+          <p class="scene-card__desc">
+            散らかりやすい小物を、静かにまとめる。<br>
+            机の上が整うと、頭の中も少し整う。
+          </p>
+          <span class="scene-card__count">6 items</span>
+        </a>
+        <a class="scene-card fade-in" href="./scenes/detail.html?key=rainy_room">
+          <div class="scene-card__image">
+            <img src="./ame.jpg" alt="雨の日の部屋">
+          </div>
+          <h3 class="scene-card__title">雨の日の部屋</h3>
+          <p class="scene-card__desc">
+            外に出ない日は、部屋の空気を整える日。<br>
+            キャンドルと布と、小さな花器。
+          </p>
+          <span class="scene-card__count">5 items</span>
+        </a>
+        <a class="scene-card fade-in" href="./scenes/detail.html?key=welcome_shelf">
+          <div class="scene-card__image">
+            <img src="./tana.jpg" alt="誰かを迎える棚">
+          </div>
+          <h3 class="scene-card__title">誰かを迎える棚</h3>
+          <p class="scene-card__desc">
+            人が来る日に、何気なく目に入る場所。<br>
+            飾りすぎない、でも空気のある棚をつくる。
+          </p>
+          <span class="scene-card__count">5 items</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="section section--large products" id="products">
+    <div class="section__inner">
+      <div class="products__heading fade-in">
+        <span class="products__heading-en">Online Store</span>
+        <h2 class="products__heading-ja">おすすめの道具</h2>
+      </div>
+      <div class="products__grid" id="homeProductsGrid"></div>
+      <div class="products__more fade-in">
+        <a href="./products/index.html" class="btn">すべての商品を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Narrative / Column -->
+  <section class="section section--large narrative" id="column">
+    <div class="narrative__inner">
+      <div class="fade-in">
+        <span class="narrative__label">Column</span>
+        <h2 class="narrative__title">
+          旅先で見つけた、名前のない道具
+        </h2>
+      </div>
+      <div class="fade-in fade-in--slow">
+        <div class="narrative__body">
+          <p>
+            旅先の小さな店で、棚の隅にひとつだけ置かれていた。
+            派手ではないし、特別な装飾もない。
+            でも、なぜか目が離せなかった。
+          </p>
+          <p>
+            手に取ると、少しだけざらつく表面。
+            ひとつずつ表情が違って、
+            使い込んだ革のように、
+            触るたびに手に馴染んでいく感触があった。
+          </p>
+          <p>
+            この店に置く物は、
+            そういう出会いの延長にあるものだけにしたい。
+            機能や数字ではなく、手に取った時の空気で選ぶ。
+            それが、余白と湯気の選び方です。
+          </p>
+        </div>
+      </div>
+      <div class="narrative__image fade-in">
+        <img src="./pexels-eugenia-remark-5767088-15955862.jpg" alt="静かな花器と棚のある風景">
+      </div>
+      <div style="text-align: center; margin-top: 64px;" class="fade-in">
+        <a href="./column/index.html" class="btn btn--light">読みものを見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section section--large about" id="about">
+    <div class="about__inner">
+      <div class="fade-in">
+        <span class="about__label">About</span>
+      </div>
+      <div class="fade-in fade-in--slow">
+        <div class="about__text">
+          <p>
+            派手ではないけれど、毎日使いたくなる。<br>
+            そんな物を、自分の感覚で正直に選びたいと思って、<br>
+            この店を作りました。
+          </p>
+          <p>
+            静かな部屋の空気に似合うものを選びたい。<br>
+            余白と湯気は、暮らしの温度を少し整える道具を集める店です。
+          </p>
+        </div>
+      </div>
+      <div class="about__line fade-in"></div>
+    </div>
+  </section>
+
+  <!-- New Arrivals -->
+  <section class="section arrivals">
+    <div class="section__inner">
+      <div class="arrivals__heading fade-in">
+        <span class="arrivals__heading-en">New &amp; Restock</span>
+        <h2 class="arrivals__heading-ja">今週入ったもの</h2>
+      </div>
+      <div class="arrivals__list fade-in">
+        <div class="arrival-card">
+          <div class="arrival-card__image">
+            <img src="./pexels-elifgokce787-13506401.jpg" alt="木製のコースター">
+          </div>
+          <span class="arrival-card__tag">New</span>
+          <h3 class="arrival-card__name">木製のコースター</h3>
+        </div>
+        <div class="arrival-card">
+          <div class="arrival-card__image">
+            <img src="./pexels-cup-of-couple-6963820.jpg" alt="陶器のマグ — 灰白">
+          </div>
+          <span class="arrival-card__tag">Restock</span>
+          <h3 class="arrival-card__name">陶器のマグ — 灰白</h3>
+        </div>
+        <div class="arrival-card">
+          <div class="arrival-card__image">
+            <img src="./pexels-serenakoi-5667226.jpg" alt="キャニスター — 錫蓋">
+          </div>
+          <span class="arrival-card__tag">New</span>
+          <h3 class="arrival-card__name">キャニスター — 錫蓋</h3>
+        </div>
+        <div class="arrival-card">
+          <div class="arrival-card__image">
+            <div class="arrival-card__image-placeholder">photo</div>
+          </div>
+          <span class="arrival-card__tag">Season</span>
+          <h3 class="arrival-card__name">ウッディルームスプレー</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__logo brand-lockup">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="./yohakutoyugelogo-transparent.png" alt="">
+        </span>
+        <span>余白と湯気</span>
+      </div>
+      <p class="footer__desc">
+        静かな暮らしを整える、生活雑貨店。<br>
+        使うほど馴染むものを、静かに選んでいます。
+      </p>
+      <ul class="footer__nav">
+        <li><a href="./products/index.html">Online Store</a></li>
+        <li><a href="#">Scenes</a></li>
+        <li><a href="#">Column</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+      <div class="footer__line"></div>
+      <p class="footer__copy">&copy; 2026 Yohaku to Yuge. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./store-data.js"></script>
+  <script>
+    // Opening animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const opening = document.getElementById('opening');
+
+      setTimeout(() => {
+        opening.classList.add('is-visible');
+      }, 300);
+
+      setTimeout(() => {
+        opening.classList.add('is-hidden');
+      }, 3800);
+
+      setTimeout(() => {
+        opening.style.display = 'none';
+      }, 5000);
+    });
+
+    // Scroll fade-in
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Parallax on hero background
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroBg = document.querySelector('.hero__bg');
+      if (heroBg && scrollY < window.innerHeight) {
+        heroBg.style.transform = `translateY(${scrollY * 0.3}px)`;
+      }
+    }, { passive: true });
+
+    const homeProductsGrid = document.getElementById('homeProductsGrid');
+    if (homeProductsGrid && window.STORE_PRODUCTS) {
+      const featuredProducts = window.STORE_PRODUCTS.filter((product) => product.featured).slice(0, 6);
+      homeProductsGrid.innerHTML = featuredProducts.map((product) => `
+        <div class="product-card fade-in">
+          <a class="product-card__link" href="./products/detail.html?sku=${product.sku}">
+            <div class="product-card__image">
+              <img src="${product.image_home}" alt="${product.name}">
+            </div>
+            <h3 class="product-card__name">${product.name}</h3>
+            <p class="product-card__desc">${product.short_description}</p>
+            <span class="product-card__price">${product.price}</span>
+          </a>
+        </div>
+      `).join('');
+      document.querySelectorAll('#homeProductsGrid .fade-in').forEach((el) => observer.observe(el));
+    }
+  </script>
+
+</body>
+</html>

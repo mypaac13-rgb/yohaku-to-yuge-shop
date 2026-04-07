@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品詳細 | 余白と湯気</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#f0ede8;--bg-warm:#e8e4dd;--text:#2c2825;--light:#6b6560;--line:#c4beb6;--accent:#8a7e72;--white:#f7f5f2;--font-mincho:'Shippori Mincho','Zen Old Mincho',serif;--font-garamond:'EB Garamond',serif}
+    body{font-family:var(--font-mincho);background:var(--bg);color:var(--text);line-height:2.1;letter-spacing:.08em}
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+    a{color:inherit;text-decoration:none} img{display:block;max-width:100%}
+    .page{max-width:1120px;margin:0 auto;padding:48px 24px 96px}
+    .topbar{display:flex;justify-content:space-between;gap:24px;margin-bottom:40px}
+    .topbar__brand{letter-spacing:.22em;font-size:.9rem}
+    .topbar__links{display:flex;gap:24px;font-family:var(--font-garamond);color:var(--accent)}
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+    .media{background:var(--bg-warm);aspect-ratio:4/5;overflow:hidden}
+    .media img{width:100%;height:100%;object-fit:cover}
+    .label{font-family:var(--font-garamond);color:var(--accent);font-size:.8rem;letter-spacing:.16em;display:block;margin-bottom:16px}
+    .category{display:inline-block;margin-bottom:10px;font-size:.78rem;color:var(--accent)}
+    .title{font-size:2rem;font-weight:500;letter-spacing:.14em;margin-bottom:14px}
+    .price{font-family:var(--font-garamond);font-size:1.1rem;color:var(--accent);margin-bottom:28px}
+    .lead{color:var(--light);margin-bottom:28px;font-size:.92rem}
+    .section{padding-top:28px;border-top:1px solid var(--line);margin-top:28px}
+    .section h2{font-size:.9rem;font-weight:500;margin-bottom:12px;letter-spacing:.12em}
+    .section p{color:var(--light);font-size:.88rem}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px}
+    .cta{display:inline-block;padding:14px 30px;border:1px solid var(--line)}
+    .cta--primary{background:var(--text);color:var(--white);border-color:var(--text)}
+    @media (max-width:820px){.layout{grid-template-columns:1fr;gap:32px}.page{padding:32px 20px 72px}.title{font-size:1.5rem}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="topbar__brand" href="../index.html">余白と湯気</a>
+      <div class="topbar__links">
+        <a id="categoryLink" href="../categories/index.html">Category</a>
+        <a href="./index.html">Online Store</a>
+        <a href="../index.html">Home</a>
+      </div>
+    </div>
+    <section class="layout">
+      <div class="media"><img id="productImage" src="" alt=""></div>
+      <div>
+        <span class="label">Online Store Detail</span>
+        <a class="category" id="categoryText" href="../categories/index.html"></a>
+        <h1 class="title" id="productName"></h1>
+        <div class="price" id="productPrice"></div>
+        <p class="lead" id="productDescription"></p>
+        <div id="detailSections"></div>
+        <div class="actions">
+          <a class="cta cta--primary" id="orderLink" href="../order/index.html">銀行振込で購入する</a>
+          <a class="cta" href="./index.html">Online Storeへ戻る</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../store-data.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const sku = params.get('sku') || 'mug';
+    const categories = Object.fromEntries((window.STORE_CATEGORIES || []).map((category) => [category.key, category]));
+    const product = (window.STORE_PRODUCTS || []).find((item) => item.sku === sku) || (window.STORE_PRODUCTS || [])[0];
+    if (product) {
+      document.title = `${product.name} | 余白と湯気`;
+      document.getElementById('productImage').src = product.image;
+      document.getElementById('productImage').alt = product.name;
+      document.getElementById('productName').textContent = product.name;
+      document.getElementById('productPrice').textContent = product.price;
+      document.getElementById('productDescription').textContent = product.short_description;
+      const category = categories[product.category];
+      const categoryHref = category ? `../categories/category.html?key=${category.key}` : '../categories/index.html';
+      document.getElementById('categoryText').textContent = category ? category.name : '';
+      document.getElementById('categoryText').href = categoryHref;
+      document.getElementById('categoryLink').href = categoryHref;
+      document.getElementById('orderLink').href = `../order/index.html?sku=${product.sku}`;
+      document.getElementById('detailSections').innerHTML = (product.detail_sections || []).map((section) => `
+        <div class="section">
+          <h2>${section.title}</h2>
+          <p>${section.text}</p>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
