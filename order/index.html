@@ -44,6 +44,7 @@
     .status{margin-top:16px;padding:14px 16px;border:1px solid var(--line);font-size:.82rem;background:rgba(247,245,242,.45);display:none}
     .status.is-visible{display:block}
     .status.is-error{border-color:#9b7f7f;color:#6a4d4d;background:rgba(155,127,127,.08)}
+    .hidden-form{display:none}
     @media (max-width:820px){.layout{grid-template-columns:1fr}.page{padding:32px 20px 72px}.hero__title{font-size:1.5rem}}
   </style>
 </head>
@@ -93,6 +94,23 @@
       </div>
     </section>
   </main>
+  <iframe name="orderSubmitFrame" style="display:none" title="order submit"></iframe>
+  <form class="hidden-form" id="orderSubmitForm" method="POST" target="orderSubmitFrame">
+    <input type="hidden" name="sku" id="submitSku">
+    <input type="hidden" name="product_name" id="submitProductName">
+    <input type="hidden" name="product_price" id="submitProductPrice">
+    <input type="hidden" name="category_name" id="submitCategoryName">
+    <input type="hidden" name="customer_name" id="submitCustomerName">
+    <input type="hidden" name="customer_email" id="submitCustomerEmail">
+    <input type="hidden" name="customer_zip" id="submitCustomerZip">
+    <input type="hidden" name="customer_address" id="submitCustomerAddress">
+    <input type="hidden" name="customer_note" id="submitCustomerNote">
+    <input type="hidden" name="bank_name" id="submitBankName">
+    <input type="hidden" name="bank_branch" id="submitBankBranch">
+    <input type="hidden" name="bank_account_type" id="submitBankType">
+    <input type="hidden" name="bank_account_number" id="submitBankNumber">
+    <input type="hidden" name="bank_account_holder" id="submitBankHolder">
+  </form>
   <script src="../store-data.js"></script>
   <script src="./order-config.js"></script>
   <script>
@@ -131,7 +149,22 @@
       bankType: document.getElementById('bankType'),
       bankNumber: document.getElementById('bankNumber'),
       bankHolder: document.getElementById('bankHolder'),
-      bankWarn: document.getElementById('bankWarn')
+      bankWarn: document.getElementById('bankWarn'),
+      orderSubmitForm: document.getElementById('orderSubmitForm'),
+      submitSku: document.getElementById('submitSku'),
+      submitProductName: document.getElementById('submitProductName'),
+      submitProductPrice: document.getElementById('submitProductPrice'),
+      submitCategoryName: document.getElementById('submitCategoryName'),
+      submitCustomerName: document.getElementById('submitCustomerName'),
+      submitCustomerEmail: document.getElementById('submitCustomerEmail'),
+      submitCustomerZip: document.getElementById('submitCustomerZip'),
+      submitCustomerAddress: document.getElementById('submitCustomerAddress'),
+      submitCustomerNote: document.getElementById('submitCustomerNote'),
+      submitBankName: document.getElementById('submitBankName'),
+      submitBankBranch: document.getElementById('submitBankBranch'),
+      submitBankType: document.getElementById('submitBankType'),
+      submitBankNumber: document.getElementById('submitBankNumber'),
+      submitBankHolder: document.getElementById('submitBankHolder')
     };
 
     el.productName.textContent = product.name;
@@ -198,6 +231,24 @@
       return '';
     }
 
+    function fillSubmitForm() {
+      el.orderSubmitForm.action = endpoint;
+      el.submitSku.value = product.sku;
+      el.submitProductName.value = product.name;
+      el.submitProductPrice.value = product.price;
+      el.submitCategoryName.value = categories[product.category] || '';
+      el.submitCustomerName.value = el.customerName.value.trim();
+      el.submitCustomerEmail.value = el.customerEmail.value.trim();
+      el.submitCustomerZip.value = el.customerZip.value.trim();
+      el.submitCustomerAddress.value = el.customerAddress.value.trim();
+      el.submitCustomerNote.value = el.customerNote.value.trim();
+      el.submitBankName.value = bankConfig.bank_name || '';
+      el.submitBankBranch.value = bankConfig.branch_name || '';
+      el.submitBankType.value = bankConfig.account_type || '';
+      el.submitBankNumber.value = bankConfig.account_number || '';
+      el.submitBankHolder.value = bankConfig.account_holder || '';
+    }
+
     el.submitOrder.addEventListener('click', async () => {
       const error = validateFields();
       if (error) {
@@ -210,36 +261,9 @@
       refreshPreview();
 
       try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sku: product.sku,
-            product_name: product.name,
-            product_price: product.price,
-            category_name: categories[product.category] || '',
-            customer_name: el.customerName.value.trim(),
-            customer_email: el.customerEmail.value.trim(),
-            customer_zip: el.customerZip.value.trim(),
-            customer_address: el.customerAddress.value.trim(),
-            customer_note: el.customerNote.value.trim(),
-            bank: bankConfig
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || '注文送信に失敗しました。');
-        }
-
-        orderId = data.order_id || orderId;
-        el.productMeta.textContent = `${categories[product.category] || ''} / ${product.price} / 注文番号 ${orderId}`;
-        if (data.bank) setBankConfig(data.bank);
-        refreshPreview();
-        const mailState = data.email_status === 'sent'
-          ? `控えメールを ${el.customerEmail.value.trim()} に送信しました。`
-          : '注文は保存されましたが、メール送信設定を確認してください。';
-        setStatus(`ご注文を受け付けました。注文番号: ${orderId}。${mailState} 上記の振込先をご確認ください。`, false);
+        fillSubmitForm();
+        el.orderSubmitForm.submit();
+        setStatus(`注文を送信しました。数十秒以内に控えメールが届くか確認してください。届かない場合は Apps Script の公開設定を見直してください。振込先は上記のとおりです。`, false);
       } catch (err) {
         setStatus(err.message || '注文送信に失敗しました。', true);
       } finally {

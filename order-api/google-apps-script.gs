@@ -8,7 +8,7 @@ function doOptions() {
 
 function doPost(e) {
   try {
-    const payload = JSON.parse(e.postData.contents || '{}');
+    const payload = parsePayload(e);
     const required = ['sku', 'product_name', 'product_price', 'customer_name', 'customer_email', 'customer_zip', 'customer_address'];
     required.forEach((key) => {
       if (!String(payload[key] || '').trim()) {
@@ -17,7 +17,13 @@ function doPost(e) {
     });
 
     const orderId = createOrderId();
-    const bank = payload.bank || {};
+    const bank = payload.bank || {
+      bank_name: payload.bank_name || '',
+      branch_name: payload.bank_branch || '',
+      account_type: payload.bank_account_type || '',
+      account_number: payload.bank_account_number || '',
+      account_holder: payload.bank_account_holder || ''
+    };
     const timestamp = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss');
     const sheet = getSheet();
 
@@ -80,6 +86,31 @@ function getSheet() {
 
 function createOrderId() {
   return 'YY' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyMMddHHmmss');
+}
+
+function parsePayload(e) {
+  if (e.postData && e.postData.contents) {
+    try {
+      return JSON.parse(e.postData.contents);
+    } catch (_) {}
+  }
+  const params = e.parameter || {};
+  return {
+    sku: params.sku || '',
+    product_name: params.product_name || '',
+    product_price: params.product_price || '',
+    category_name: params.category_name || '',
+    customer_name: params.customer_name || '',
+    customer_email: params.customer_email || '',
+    customer_zip: params.customer_zip || '',
+    customer_address: params.customer_address || '',
+    customer_note: params.customer_note || '',
+    bank_name: params.bank_name || '',
+    bank_branch: params.bank_branch || '',
+    bank_account_type: params.bank_account_type || '',
+    bank_account_number: params.bank_account_number || '',
+    bank_account_holder: params.bank_account_holder || ''
+  };
 }
 
 function buildMailText(orderId, payload, bank) {
