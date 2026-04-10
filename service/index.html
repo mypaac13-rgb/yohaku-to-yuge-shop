@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>制作お申し込み | 余白と湯気</title>
+  <meta name="description" content="余白と湯気の静かな1ページサイト制作のお申し込みフォームです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f0ede8;
+      --bg-warm: #e8e4dd;
+      --text: #2c2825;
+      --light: #6b6560;
+      --line: #c4beb6;
+      --accent: #8a7e72;
+      --white: #f7f5f2;
+      --font-mincho: 'Shippori Mincho', 'Zen Old Mincho', serif;
+      --font-garamond: 'EB Garamond', serif;
+      --content: 1120px;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-mincho);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 2.1;
+      letter-spacing: 0.08em;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 40px 24px 96px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 52px;
+    }
+
+    .topbar__brand {
+      font-size: 0.9rem;
+      letter-spacing: 0.22em;
+    }
+
+    .topbar__back {
+      font-family: var(--font-garamond);
+      font-size: 0.84rem;
+      color: var(--accent);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 36px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      font-family: var(--font-garamond);
+      font-size: 0.82rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 500;
+      line-height: 1.6;
+      letter-spacing: 0.16em;
+      margin-bottom: 18px;
+    }
+
+    .hero p,
+    .hero li,
+    .panel p,
+    .panel li,
+    .field__hint,
+    .preview,
+    .status,
+    .fallback {
+      font-size: 0.88rem;
+      color: var(--light);
+    }
+
+    .hero ul,
+    .notes ul {
+      list-style: none;
+    }
+
+    .hero li,
+    .notes li {
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .hero li::before,
+    .notes li::before {
+      content: '・';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    .hero__card {
+      padding: 28px;
+      border: 1px solid var(--line);
+      background: rgba(247, 245, 242, 0.56);
+    }
+
+    .hero__card-title {
+      font-size: 0.96rem;
+      margin-bottom: 14px;
+      letter-spacing: 0.12em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
+    }
+
+    .panel {
+      padding: 30px;
+      border: 1px solid var(--line);
+      background: rgba(247, 245, 242, 0.5);
+    }
+
+    .panel h2 {
+      font-size: 0.98rem;
+      font-weight: 500;
+      margin-bottom: 18px;
+      letter-spacing: 0.12em;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field--split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      color: var(--light);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text);
+      font: inherit;
+      letter-spacing: inherit;
+      padding: 14px 15px;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+    }
+
+    .field__hint {
+      margin-top: 6px;
+      line-height: 1.8;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 14px 24px;
+      font: inherit;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.82;
+      transform: translateY(-1px);
+    }
+
+    .btn--primary {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--white);
+    }
+
+    .preview,
+    .status,
+    .fallback {
+      margin-top: 18px;
+      padding: 16px;
+      white-space: pre-wrap;
+      border: 1px solid var(--line);
+      background: rgba(247, 245, 242, 0.42);
+    }
+
+    .status {
+      display: none;
+    }
+
+    .status.is-visible {
+      display: block;
+    }
+
+    .status.is-error {
+      border-color: #9b7f7f;
+      color: #6a4d4d;
+      background: rgba(155, 127, 127, 0.08);
+    }
+
+    .fallback a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .notes {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 860px) {
+      .hero,
+      .layout,
+      .field--split {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        padding: 28px 18px 72px;
+      }
+
+      .topbar {
+        margin-bottom: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="topbar__brand" href="../index.html">余白と湯気</a>
+      <a class="topbar__back" href="../index.html">Top Page</a>
+    </div>
+
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Quiet One Page Site</span>
+        <h1>静かな1ページサイト制作<br>お申し込みフォーム</h1>
+        <p>個人で活動している方や、小さなお店のための1ページサイト制作を受け付けています。文章や写真がまだ揃っていなくても、やりとりしながら整えていけます。</p>
+      </div>
+      <aside class="hero__card">
+        <h2 class="hero__card-title">制作内容</h2>
+        <ul>
+          <li>1ページのホームページ制作</li>
+          <li>スマホ対応</li>
+          <li>修正2回まで</li>
+          <li>公開サポートあり</li>
+          <li>目安納期 7日から10日</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <h2>お申し込み内容</h2>
+        <form id="serviceForm" novalidate>
+          <div class="field field--split">
+            <div>
+              <label for="name">お名前</label>
+              <input id="name" name="name" autocomplete="name" required>
+            </div>
+            <div>
+              <label for="brandName">屋号 / 活動名</label>
+              <input id="brandName" name="brandName" autocomplete="organization">
+            </div>
+          </div>
+
+          <div class="field field--split">
+            <div>
+              <label for="email">メールアドレス</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div>
+              <label for="deadline">希望納期</label>
+              <input id="deadline" name="deadline" placeholder="例: 4月末 / なるべく早め">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="activity">どんな活動をしていますか</label>
+            <textarea id="activity" name="activity" required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="reason">ホームページを作りたい理由</label>
+            <textarea id="reason" name="reason" required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="contents">入れたい内容</label>
+            <textarea id="contents" name="contents" placeholder="例: プロフィール、メニュー、アクセス、問い合わせ先"></textarea>
+          </div>
+
+          <div class="field field--split">
+            <div>
+              <label for="photos">写真の準備状況</label>
+              <select id="photos" name="photos">
+                <option value="用意している">用意している</option>
+                <option value="一部だけある">一部だけある</option>
+                <option value="まだない">まだない</option>
+              </select>
+            </div>
+            <div>
+              <label for="reference">参考にしたいサイトや雰囲気</label>
+              <input id="reference" name="reference" placeholder="URLや、言葉だけでも可">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="note">その他伝えたいこと</label>
+            <textarea id="note" name="note"></textarea>
+            <p class="field__hint">Instagram、note、既存のショップURLなどがあればここに書いてください。</p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn--primary" type="submit">内容を送信する</button>
+            <button class="btn" type="button" id="copyButton">内容をコピー</button>
+          </div>
+        </form>
+
+        <div class="status" id="status"></div>
+        <div class="fallback" id="fallback"></div>
+      </section>
+
+      <aside class="panel">
+        <h2>送信前の確認</h2>
+        <div class="preview" id="preview">ここに入力内容の下書きが表示されます。</div>
+
+        <div class="notes">
+          <h2>このフォームについて</h2>
+          <ul>
+            <li>送信先が未設定でも、内容をコピーしてメール送付できるようにしています。</li>
+            <li>`form-config.js` に送信先URLを入れると、自動送信に切り替えられます。</li>
+            <li>Google Apps Script や Formspree などの送信先にも接続できます。</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./form-config.js"></script>
+  <script>
+    const config = window.SERVICE_FORM_CONFIG || {};
+    const form = document.getElementById('serviceForm');
+    const preview = document.getElementById('preview');
+    const status = document.getElementById('status');
+    const fallback = document.getElementById('fallback');
+    const copyButton = document.getElementById('copyButton');
+    const fields = Array.from(form.querySelectorAll('input, textarea, select'));
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function setStatus(message, isError) {
+      status.textContent = message;
+      status.classList.add('is-visible');
+      status.classList.toggle('is-error', Boolean(isError));
+    }
+
+    function buildPayload() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      return {
+        submitted_at: new Date().toISOString(),
+        service_name: config.subjectPrefix || '静かな1ページサイト制作',
+        name: data.name || '',
+        brand_name: data.brandName || '',
+        email: data.email || '',
+        deadline: data.deadline || '',
+        activity: data.activity || '',
+        reason: data.reason || '',
+        contents: data.contents || '',
+        photos: data.photos || '',
+        reference: data.reference || '',
+        note: data.note || ''
+      };
+    }
+
+    function buildPreviewText(payload) {
+      return [
+        `${payload.service_name} お申し込み`,
+        `受付日時: ${payload.submitted_at}`,
+        '',
+        `お名前: ${payload.name || '未入力'}`,
+        `屋号 / 活動名: ${payload.brand_name || '未入力'}`,
+        `メールアドレス: ${payload.email || '未入力'}`,
+        `希望納期: ${payload.deadline || '未入力'}`,
+        '',
+        'どんな活動をしていますか',
+        payload.activity || '未入力',
+        '',
+        'ホームページを作りたい理由',
+        payload.reason || '未入力',
+        '',
+        '入れたい内容',
+        payload.contents || '未入力',
+        '',
+        `写真の準備状況: ${payload.photos || '未入力'}`,
+        `参考にしたいサイトや雰囲気: ${payload.reference || '未入力'}`,
+        '',
+        'その他伝えたいこと',
+        payload.note || 'なし'
+      ].join('\n');
+    }
+
+    function refreshPreview() {
+      preview.textContent = buildPreviewText(buildPayload());
+    }
+
+    async function copyPreview() {
+      try {
+        await navigator.clipboard.writeText(preview.textContent);
+        setStatus('入力内容をコピーしました。', false);
+      } catch (error) {
+        setStatus('コピーに失敗しました。手動で内容を選択してください。', true);
+      }
+    }
+
+    function renderFallback(payload) {
+      const subject = encodeURIComponent(`${payload.service_name} お申し込み`);
+      const body = encodeURIComponent(buildPreviewText(payload));
+      const ownerEmail = config.ownerEmail || 'example@example.com';
+      fallback.innerHTML = [
+        '自動送信先がまだ設定されていません。',
+        `いまは <a href="mailto:${escapeHtml(ownerEmail)}?subject=${subject}&body=${body}">${escapeHtml(ownerEmail)}</a> 宛に、コピーした内容を送れば使えます。`
+      ].join('\n');
+    }
+
+    function validate(payload) {
+      if (!payload.name.trim()) return 'お名前を入力してください。';
+      if (!payload.email.trim()) return 'メールアドレスを入力してください。';
+      if (!payload.activity.trim()) return '活動内容を入力してください。';
+      if (!payload.reason.trim()) return 'ホームページを作りたい理由を入力してください。';
+      return '';
+    }
+
+    fields.forEach((field) => {
+      field.addEventListener('input', refreshPreview);
+      field.addEventListener('change', refreshPreview);
+    });
+
+    copyButton.addEventListener('click', copyPreview);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = buildPayload();
+      const errorMessage = validate(payload);
+      refreshPreview();
+      renderFallback(payload);
+
+      if (errorMessage) {
+        setStatus(errorMessage, true);
+        return;
+      }
+
+      if (!config.endpoint) {
+        setStatus('送信先URLが未設定です。内容をコピーしてメール送付してください。', true);
+        return;
+      }
+
+      setStatus('送信しています。', false);
+
+      try {
+        const response = await fetch(config.endpoint, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        setStatus(config.successMessage || '送信しました。', false);
+        form.reset();
+        refreshPreview();
+        renderFallback(buildPayload());
+      } catch (error) {
+        setStatus('送信に失敗しました。内容をコピーしてメール送付してください。', true);
+      }
+    });
+
+    refreshPreview();
+    renderFallback(buildPayload());
+  </script>
+</body>
+</html>
